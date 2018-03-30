@@ -4,15 +4,16 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>SVG Test</title>
+    <title>Warp Shift!</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Mono" rel="stylesheet">
 </head>
 
 <body>
     <ul>
         <li>
-            <p id="time_shift_status"></p>
+            <p id="warp_shift_status"></p>
         </li>
         <li style="float:right">
             <p id="warn"></p>
@@ -30,7 +31,7 @@
     var p = document.getElementById("prism")
 
 
-    var time_shift_status = 0
+    var warp_shift_status = 0
 
     var counter = 0
 
@@ -55,8 +56,77 @@
         });
     }
 
+
+
+    //Messaging for time shift status
+    setInterval(function () {
+        if (warp_shift_status === 0) {
+            document.getElementById("warp_shift_status").innerHTML = "Warp shift charging"
+        } else if (warp_shift_status === 1) {
+            document.getElementById("warp_shift_status").innerHTML = "Warp shift ready"
+        } else if (warp_shift_status === 2) {
+            document.getElementById("warp_shift_status").innerHTML = "Warp shift primed"
+        }
+    }, 100)
+
+    //Counter for charging time shift
+    setInterval(function () {
+        if (counter < 3 && warp_shift_status === 0) {
+            counter++
+        } else if (counter === 3 && warp_shift_status === 0) {
+            warp_shift_status = 1
+        }
+    }, 1000)
+
+    //Function to lay the prism 
+    function layPrism() {
+        if (warp_shift_status === 1) {
+            p.classList.toggle("hidden")
+            p.setAttribute("cx", c.getAttribute("cx"))
+            p.setAttribute("cy", c.getAttribute("cy"))
+            warp_shift_status = 2
+            log("layPrism")
+        } else if (warp_shift_status === 0) {
+            document.getElementById("warn").innerHTML = "Warp shift is still charging!"
+            setTimeout(function () {
+                document.getElementById("warn").innerHTML = ""
+            }, 1000)
+        } else if (warp_shift_status === 2) {
+            document.getElementById("warn").innerHTML = "You already have a prism in place!"
+            setTimeout(function () {
+                document.getElementById("warn").innerHTML = ""
+            }, 1000)
+        }
+    }
+    //Function to shift to the prism
+    function shift() {
+        if (warp_shift_status === 0) {
+            document.getElementById("warn").innerHTML = "Warp shift is still charging!"
+            setTimeout(function () {
+                document.getElementById("warn").innerHTML = ""
+            }, 1000)
+        } else if (warp_shift_status === 1) {
+            document.getElementById("warn").innerHTML = "No available prism!"
+            setTimeout(function () {
+                document.getElementById("warn").innerHTML = ""
+            }, 1000)
+        } else if (warp_shift_status === 2) {
+            document.getElementById("warn").innerHTML = "Warping!"
+            setTimeout(function () {
+                document.getElementById("warn").innerHTML = ""
+            }, 750)
+            setTimeout(function () {
+                c.setAttribute("cx", parseFloat(p.getAttribute("cx")))
+                c.setAttribute("cy", parseFloat(p.getAttribute("cy")))
+                p.classList.toggle("hidden")
+                counter = 0
+                warp_shift_status = 0
+            }, 750)
+        }
+    }
+
     //handle movement
-    max_increment = 3
+    max_increment = 5
     x_increment = 0
     y_increment = 0
 
@@ -78,70 +148,6 @@
             c.setAttribute("cy", y_)
         }
     }, 10)
-
-    //Messaging for time shift status
-    setInterval(function () {
-        if (time_shift_status === 0) {
-            document.getElementById("time_shift_status").innerHTML = "Time shift charging"
-        } else if (time_shift_status === 1) {
-            document.getElementById("time_shift_status").innerHTML = "Time shift ready"
-        } else if (time_shift_status === 2) {
-            document.getElementById("time_shift_status").innerHTML = "Time shift primed"
-        }
-    }, 100)
-
-    //Counter for charging time shift
-    setInterval(function () {
-        if (counter < 3 && time_shift_status === 0) {
-            counter++
-        } else if (counter === 3 && time_shift_status === 0) {
-            time_shift_status = 1
-        }
-    }, 1000)
-
-    //Function to lay the prism 
-    function layPrism() {
-        if (time_shift_status === 1) {
-            p.classList.toggle("hidden")
-            p.setAttribute("cx", c.getAttribute("cx"))
-            p.setAttribute("cy", c.getAttribute("cy"))
-            time_shift_status = 2
-            log("layPrism")
-        } else if (time_shift_status === 0) {
-            document.getElementById("warn").innerHTML = "Time shift is still charging!"
-            setTimeout(function () {
-                document.getElementById("warn").innerHTML = ""
-            }, 1000)
-        } else if (time_shift_status === 2) {
-            document.getElementById("warn").innerHTML = "You already have a prism in place!"
-            setTimeout(function () {
-                document.getElementById("warn").innerHTML = ""
-            }, 1000)
-        }
-    }
-    //Function to shift to the prism
-    function shift() {
-        if (time_shift_status === 0) {
-            document.getElementById("warn").innerHTML = "Time shift is still charging!"
-            setTimeout(function () {
-                document.getElementById("warn").innerHTML = ""
-            }, 1000)
-        } else if (time_shift_status === 1) {
-            document.getElementById("warn").innerHTML = "No available prism!"
-            setTimeout(function () {
-                document.getElementById("warn").innerHTML = ""
-            }, 1000)
-        } else if (time_shift_status === 2) {
-            //direction = "stop"
-            c.setAttribute("cx", parseFloat(p.getAttribute("cx")))
-            c.setAttribute("cy", parseFloat(p.getAttribute("cy")))
-            p.classList.toggle("hidden")
-            counter = 0
-            time_shift_status = 0
-
-
-        }
-    }
 
     //event listener to handle user input
     window.addEventListener("keydown", function (e) {
@@ -181,9 +187,6 @@
                         clearTimeout(tx)
                     }
                 }, 100)
-
-                // y_increment = 0
-                // x_increment = 0
                 break
             case 69: //E
                 shift();

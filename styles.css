@@ -22,5 +22,5 @@ li p {
     text-decoration: none;
 }
 
-html, body { margin:0; padding:0; overflow:hidden }
+html, body { margin:0; padding:0; overflow:hidden; font-family: 'IBM Plex Mono', monospace; }
 svg { position:fixed; top:0; left:0; height:100%; width:100% }
