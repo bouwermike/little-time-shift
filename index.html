@@ -29,32 +29,19 @@
     var c = document.getElementById("circle")
     var p = document.getElementById("prism")
 
-    var cx = parseFloat(c.getAttribute("cx"))
-    var cy = parseFloat(c.getAttribute("cy"))
-    var cr = parseFloat(c.getAttribute("r"))
-
-    var px = parseFloat(p.getAttribute("cx"))
-    var py = parseFloat(p.getAttribute("cy"))
-    var pr = parseFloat(p.getAttribute("r"))
-
-
-    var cx_ = cx
-    var cy_ = cy
-    var cr_ = cr
-
-    var current_speed = 0
-    var max_speed = 5
-
-    var direction = ""
 
     var time_shift_status = 0
 
-    counter = 0
+    var counter = 0
 
     //general logger
     function log(event) {
         console.log({
             event: event,
+            increments: {
+                x: x_increment,
+                y: y_increment
+            },
             c: {
                 cx: parseFloat(c.getAttribute("cx")),
                 cy: parseFloat(c.getAttribute("cy")),
@@ -64,10 +51,33 @@
                 px: parseFloat(p.getAttribute("cx")),
                 py: parseFloat(p.getAttribute("cy")),
                 pr: parseFloat(p.getAttribute("r"))
-            },
-            speed: current_speed
+            }
         });
     }
+
+    //handle movement
+    max_increment = 3
+    x_increment = 0
+    y_increment = 0
+
+    setInterval(function () {
+        let x = parseFloat(c.getAttribute("cx")) + x_increment
+        let y = parseFloat(c.getAttribute("cy")) + y_increment
+
+        let x_ = parseFloat(c.getAttribute("cx")) + max_increment
+        let y_ = parseFloat(c.getAttribute("cy")) + max_increment
+
+        if (x_increment < max_increment) {
+            c.setAttribute("cx", x)
+        } else {
+            c.setAttribute("cx", x_)
+        }
+        if (y_increment < max_increment) {
+            c.setAttribute("cy", y)
+        } else {
+            c.setAttribute("cy", y_)
+        }
+    }, 10)
 
     //Messaging for time shift status
     setInterval(function () {
@@ -93,8 +103,8 @@
     function layPrism() {
         if (time_shift_status === 1) {
             p.classList.toggle("hidden")
-            p.setAttribute("cx", cx)
-            p.setAttribute("cy", cy)
+            p.setAttribute("cx", c.getAttribute("cx"))
+            p.setAttribute("cy", c.getAttribute("cy"))
             time_shift_status = 2
             log("layPrism")
         } else if (time_shift_status === 0) {
@@ -102,7 +112,12 @@
             setTimeout(function () {
                 document.getElementById("warn").innerHTML = ""
             }, 1000)
-        } //todo: include warning for if a prism is already placed? Or overwrite the prism with a new location?
+        } else if (time_shift_status === 2) {
+            document.getElementById("warn").innerHTML = "You already have a prism in place!"
+            setTimeout(function () {
+                document.getElementById("warn").innerHTML = ""
+            }, 1000)
+        }
     }
     //Function to shift to the prism
     function shift() {
@@ -120,10 +135,6 @@
             //direction = "stop"
             c.setAttribute("cx", parseFloat(p.getAttribute("cx")))
             c.setAttribute("cy", parseFloat(p.getAttribute("cy")))
-            cx = parseFloat(p.getAttribute("cx"))
-            cy = parseFloat(p.getAttribute("cy"))
-            cx_ = parseFloat(p.getAttribute("cx"))
-            cy_ = parseFloat(p.getAttribute("cy"))
             p.classList.toggle("hidden")
             counter = 0
             time_shift_status = 0
@@ -132,48 +143,6 @@
         }
     }
 
-
-    //Interval to handle movement
-    setInterval(function () {
-        switch (direction) {
-            case "up":
-                if (current_speed < max_speed) {
-                    current_speed++
-                }
-                cy_ = cy -= current_speed
-                c.setAttribute("cy", cy_)
-                break;
-            case "down":
-                if (current_speed < max_speed) {
-                    current_speed++
-                }
-                cy_ = cy += current_speed
-                c.setAttribute("cy", cy_)
-                break;
-            case "left":
-                if (current_speed < max_speed) {
-                    current_speed++
-                }
-                cx_ = cx -= current_speed
-                c.setAttribute("cx", cx_)
-                break;
-            case "right":
-                if (current_speed < max_speed) {
-                    current_speed++
-                }
-                cx_ = cx += current_speed
-                c.setAttribute("cx", cx_)
-                break;
-            case "stop":
-                current_speed = 0
-                c.setAttribute("cx", cx)
-                c.setAttribute("cy", cy)
-                break;
-            default:
-                break;
-        }
-    }, 50)
-
     //event listener to handle user input
     window.addEventListener("keydown", function (e) {
         e.preventDefault();
@@ -181,27 +150,48 @@
         //console.log(key);
         switch (key) {
             case 87: //W
-                direction = "up"
+                y_increment -= 0.5
                 break
             case 83: //S
-                direction = "down"
+                y_increment += 0.5
                 break
             case 65: //A
-                direction = "left"
+                x_increment -= 0.5
                 break
             case 68: //D
-                direction = "right"
+                x_increment += 0.5
                 break
             case 32: //Space
-                direction = "stop"
+                var ty = setInterval(() => {
+                    if (y_increment > 0) {
+                        y_increment -= 0.5
+                    } else if (y_increment < 0) {
+                        y_increment += 0.5
+                    } else if (y_increment === 0) {
+                        clearTimeout(ty)
+                    }
+                }, 100)
+
+                var tx = setInterval(() => {
+                    if (x_increment > 0) {
+                        x_increment -= 0.5
+                    } else if (x_increment < 0) {
+                        x_increment += 0.5
+                    } else if (x_increment === 0) {
+                        clearTimeout(tx)
+                    }
+                }, 100)
+
+                // y_increment = 0
+                // x_increment = 0
                 break
-            case 69:
+            case 69: //E
                 shift();
                 break
-            case 81:
+            case 81: //Q
                 layPrism();
                 break
-            case 76:
+            case 76: //L
                 log("adhoc");
                 break
             default:
