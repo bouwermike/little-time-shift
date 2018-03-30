@@ -19,18 +19,24 @@
         </li>
     </ul>
     <svg viewBox="0 0 1000 1000">
-        <circle cx="500" cy="50" r="20" stroke="black" stroke-width="3" fill="" id="circle" />
-        <circle cx="500" cy="300" r="5" stroke="green" stroke-width="3" fill="" id="prism" class="hidden" />
+        <circle cx="500" cy="500" r="20" stroke="black" stroke-width="3" fill="" id="circle" />
+        <circle cx="0" cy="0" r="5" stroke="green" stroke-width="3" fill="" id="prism" class="hidden" />
     </svg>
 </body>
 
 <script>
+    //Variables
     var c = document.getElementById("circle")
     var p = document.getElementById("prism")
 
     var cx = parseFloat(c.getAttribute("cx"))
     var cy = parseFloat(c.getAttribute("cy"))
     var cr = parseFloat(c.getAttribute("r"))
+
+    var px = parseFloat(p.getAttribute("cx"))
+    var py = parseFloat(p.getAttribute("cy"))
+    var pr = parseFloat(p.getAttribute("r"))
+
 
     var cx_ = cx
     var cy_ = cy
@@ -45,6 +51,25 @@
 
     counter = 0
 
+    //general logger
+    function log(event) {
+        console.log({
+            event: event,
+            c: {
+                cx: parseFloat(c.getAttribute("cx")),
+                cy: parseFloat(c.getAttribute("cy")),
+                cr: parseFloat(c.getAttribute("r"))
+            },
+            p: {
+                px: parseFloat(p.getAttribute("cx")),
+                py: parseFloat(p.getAttribute("cy")),
+                pr: parseFloat(p.getAttribute("r"))
+            },
+            speed: current_speed
+        });
+    }
+
+    //Messaging for time shift status
     setInterval(function () {
         if (time_shift_status === 0) {
             document.getElementById("time_shift_status").innerHTML = "Time shift charging"
@@ -55,6 +80,7 @@
         }
     }, 100)
 
+    //Counter for charging time shift
     setInterval(function () {
         if (counter < 3 && time_shift_status === 0) {
             counter++
@@ -63,6 +89,22 @@
         }
     }, 1000)
 
+    //Function to lay the prism 
+    function layPrism() {
+        if (time_shift_status === 1) {
+            p.classList.toggle("hidden")
+            p.setAttribute("cx", cx)
+            p.setAttribute("cy", cy)
+            time_shift_status = 2
+            log("layPrism")
+        } else if (time_shift_status === 0) {
+            document.getElementById("warn").innerHTML = "Time shift is still charging!"
+            setTimeout(function () {
+                document.getElementById("warn").innerHTML = ""
+            }, 1000)
+        } //todo: include warning for if a prism is already placed? Or overwrite the prism with a new location?
+    }
+    //Function to shift to the prism
     function shift() {
         if (time_shift_status === 0) {
             document.getElementById("warn").innerHTML = "Time shift is still charging!"
@@ -75,33 +117,23 @@
                 document.getElementById("warn").innerHTML = ""
             }, 1000)
         } else if (time_shift_status === 2) {
-            direction = "stop"
-            var px = parseFloat(p.getAttribute("cx"))
-            var py = parseFloat(p.getAttribute("cy"))
-            cx_ = px
-            cy_ = py
-            c.setAttribute("cx", px)
-            c.setAttribute("cy", py)
+            //direction = "stop"
+            c.setAttribute("cx", parseFloat(p.getAttribute("cx")))
+            c.setAttribute("cy", parseFloat(p.getAttribute("cy")))
+            cx = parseFloat(p.getAttribute("cx"))
+            cy = parseFloat(p.getAttribute("cy"))
+            cx_ = parseFloat(p.getAttribute("cx"))
+            cy_ = parseFloat(p.getAttribute("cy"))
             p.classList.toggle("hidden")
             counter = 0
             time_shift_status = 0
+
+
         }
     }
 
-    function layPrism() {
-        if (time_shift_status === 1) {
-            p.classList.toggle("hidden")
-            p.setAttribute("cx", cx)
-            p.setAttribute("cy", cy)
-            time_shift_status = 2
-        } else if (time_shift_status === 0) {
-            document.getElementById("warn").innerHTML = "Time shift is still charging!"
-            setTimeout(function () {
-                document.getElementById("warn").innerHTML = ""
-            }, 1000)
-        }
-    }
 
+    //Interval to handle movement
     setInterval(function () {
         switch (direction) {
             case "up":
@@ -142,12 +174,11 @@
         }
     }, 50)
 
+    //event listener to handle user input
     window.addEventListener("keydown", function (e) {
         e.preventDefault();
         key = e.keyCode
-        console.log(key);
-
-
+        //console.log(key);
         switch (key) {
             case 87: //W
                 direction = "up"
@@ -170,13 +201,13 @@
             case 81:
                 layPrism();
                 break
+            case 76:
+                log("adhoc");
+                break
             default:
                 console.log("no action");
                 break;
         }
-
-
-
     })
 
 
