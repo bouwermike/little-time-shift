@@ -50,7 +50,6 @@
             document.getElementById("time_shift_status").innerHTML = "Time shift charging"
         } else if (time_shift_status === 1) {
             document.getElementById("time_shift_status").innerHTML = "Time shift ready"
-            document.getElementById("warn").innerHTML = ""
         } else if (time_shift_status === 2) {
             document.getElementById("time_shift_status").innerHTML = "Time shift primed"
         }
@@ -62,7 +61,6 @@
         } else if (counter === 3 && time_shift_status === 0) {
             time_shift_status = 1
         }
-
     }, 1000)
 
     function shift() {
@@ -135,9 +133,9 @@
                 c.setAttribute("cx", cx_)
                 break;
             case "stop":
-            current_speed = 0
-                // c.setAttribute("cx", cx)
-                // c.setAttribute("cy", cy)
+                current_speed = 0
+                c.setAttribute("cx", cx)
+                c.setAttribute("cy", cy)
                 break;
             default:
                 break;
