@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>SVG Test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <ul>
+        <li>
+            <p id="time_shift_status"></p>
+        </li>
+        <li style="float:right">
+            <p id="warn"></p>
+        </li>
+    </ul>
+    <svg height="1000" width="1000">
+        <circle cx="500" cy="50" r="20" stroke="black" stroke-width="3" fill="" id="circle" />
+        <circle cx="500" cy="300" r="5" stroke="green" stroke-width="3" fill="" id="prism" class="hidden" />
+    </svg>
+</body>
+
+<script>
+    var c = document.getElementById("circle")
+    var p = document.getElementById("prism")
+
+    var cx = parseFloat(c.getAttribute("cx"))
+    var cy = parseFloat(c.getAttribute("cy"))
+    var cr = parseFloat(c.getAttribute("r"))
+
+    var cx_ = cx
+    var cy_ = cy
+    var cr_ = cr
+
+    var current_speed = 0
+    var max_speed = 5
+
+    var direction = ""
+
+    var time_shift_status = 0
+
+    counter = 0
+
+    setInterval(function () {
+        if (time_shift_status === 0) {
+            document.getElementById("time_shift_status").innerHTML = "Time shift charging"
+        } else if (time_shift_status === 1) {
+            document.getElementById("time_shift_status").innerHTML = "Time shift ready"
+            document.getElementById("warn").innerHTML = ""
+        } else if (time_shift_status === 2) {
+            document.getElementById("time_shift_status").innerHTML = "Time shift primed"
+        }
+    }, 100)
+
+    setInterval(function () {
+        if (counter < 3 && time_shift_status === 0) {
+            counter++
+        } else if (counter === 3 && time_shift_status === 0) {
+            time_shift_status = 1
+        }
+
+    }, 1000)
+
+    function shift() {
+        if (time_shift_status === 0) {
+            document.getElementById("warn").innerHTML = "Time shift is still charging!"
+            setTimeout(function () {
+                document.getElementById("warn").innerHTML = ""
+            }, 1000)
+        } else if (time_shift_status === 1) {
+            document.getElementById("warn").innerHTML = "No available prism!"
+            setTimeout(function () {
+                document.getElementById("warn").innerHTML = ""
+            }, 1000)
+        } else if (time_shift_status === 2) {
+            direction = "stop"
+            var px = parseFloat(p.getAttribute("cx"))
+            var py = parseFloat(p.getAttribute("cy"))
+            cx_ = px
+            cy_ = py
+            c.setAttribute("cx", px)
+            c.setAttribute("cy", py)
+            p.classList.toggle("hidden")
+            counter = 0
+            time_shift_status = 0
+        }
+    }
+
+    function layPrism() {
+        if (time_shift_status === 1) {
+            p.classList.toggle("hidden")
+            p.setAttribute("cx", cx)
+            p.setAttribute("cy", cy)
+            time_shift_status = 2
+        } else if (time_shift_status === 0) {
+            document.getElementById("warn").innerHTML = "Time shift is still charging!"
+            setTimeout(function () {
+                document.getElementById("warn").innerHTML = ""
+            }, 1000)
+        }
+    }
+
+    setInterval(function () {
+        switch (direction) {
+            case "up":
+                if (current_speed < max_speed) {
+                    current_speed++
+                }
+                cy_ = cy -= current_speed
+                c.setAttribute("cy", cy_)
+                break;
+            case "down":
+                if (current_speed < max_speed) {
+                    current_speed++
+                }
+                cy_ = cy += current_speed
+                c.setAttribute("cy", cy_)
+                break;
+            case "left":
+                if (current_speed < max_speed) {
+                    current_speed++
+                }
+                cx_ = cx -= current_speed
+                c.setAttribute("cx", cx_)
+                break;
+            case "right":
+                if (current_speed < max_speed) {
+                    current_speed++
+                }
+                cx_ = cx += current_speed
+                c.setAttribute("cx", cx_)
+                break;
+            case "stop":
+            current_speed = 0
+                // c.setAttribute("cx", cx)
+                // c.setAttribute("cy", cy)
+                break;
+            default:
+                break;
+        }
+    }, 50)
+
+    window.addEventListener("keydown", function (e) {
+        e.preventDefault();
+        key = e.keyCode
+        console.log(key);
+
+
+        switch (key) {
+            case 87: //W
+                direction = "up"
+                break
+            case 83: //S
+                direction = "down"
+                break
+            case 65: //A
+                direction = "left"
+                break
+            case 68: //D
+                direction = "right"
+                break
+            case 32: //Space
+                direction = "stop"
+                break
+            case 69:
+                shift();
+                break
+            case 81:
+                layPrism();
+                break
+            default:
+                console.log("no action");
+                break;
+        }
+
+
+
+    })
+
+
+</script>
+
+</html>
