@@ -23,187 +23,36 @@
         <circle cx="500" cy="500" r="20" stroke="black" stroke-width="3" fill="" id="circle" />
         <circle cx="0" cy="0" r="5" stroke="green" stroke-width="3" fill="" id="prism" class="hidden" />
     </svg>
+    <div class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h1>Welcome to warpShift!</h1>
+            <h5>Controls</h5>
+            <ul>
+                <li><strong> W: </strong> Fire upward thrusters </li> 
+                <li><strong> S: </strong>Fire downward thruster </li> 
+                <li><strong> A: </strong>Fire left thrusters </li>
+                <li><strong> D: </strong>Fire right thrusters </li>
+                <li><strong> Space: </strong>Kill all thrusters and stabilise ship</li>
+                <li><strong> Q: </strong>Place warp prism </li>
+                <li><strong> E: </strong>Warp to prism </li>
+            </ul>
+        </div>
+    </div>
+    <div class="controls">
+        <button class="trigger">Help</button>
+    </div>
 </body>
 
+<script src="js/modal.js"></script>
+<script src="js/logging.js"></script>
+<script src="js/warpshift_mechanic.js"></script>
+<script src="js/movement.js"></script>
+<script src="js/user_inputs.js"></script>
 <script>
-    //Variables
+    // Global selectors
     var c = document.getElementById("circle")
     var p = document.getElementById("prism")
-
-
-    var warp_shift_status = 0
-
-    var counter = 0
-
-    //general logger
-    function log(event) {
-        console.log({
-            event: event,
-            increments: {
-                x: x_increment,
-                y: y_increment
-            },
-            c: {
-                cx: parseFloat(c.getAttribute("cx")),
-                cy: parseFloat(c.getAttribute("cy")),
-                cr: parseFloat(c.getAttribute("r"))
-            },
-            p: {
-                px: parseFloat(p.getAttribute("cx")),
-                py: parseFloat(p.getAttribute("cy")),
-                pr: parseFloat(p.getAttribute("r"))
-            }
-        });
-    }
-
-
-
-    //Messaging for time shift status
-    setInterval(function () {
-        if (warp_shift_status === 0) {
-            document.getElementById("warp_shift_status").innerHTML = "Warp shift charging"
-        } else if (warp_shift_status === 1) {
-            document.getElementById("warp_shift_status").innerHTML = "Warp shift ready"
-        } else if (warp_shift_status === 2) {
-            document.getElementById("warp_shift_status").innerHTML = "Warp shift primed"
-        }
-    }, 100)
-
-    //Counter for charging time shift
-    setInterval(function () {
-        if (counter < 3 && warp_shift_status === 0) {
-            counter++
-        } else if (counter === 3 && warp_shift_status === 0) {
-            warp_shift_status = 1
-        }
-    }, 1000)
-
-    //Function to lay the prism 
-    function layPrism() {
-        if (warp_shift_status === 1) {
-            p.classList.toggle("hidden")
-            p.setAttribute("cx", c.getAttribute("cx"))
-            p.setAttribute("cy", c.getAttribute("cy"))
-            warp_shift_status = 2
-            log("layPrism")
-        } else if (warp_shift_status === 0) {
-            document.getElementById("warn").innerHTML = "Warp shift is still charging!"
-            setTimeout(function () {
-                document.getElementById("warn").innerHTML = ""
-            }, 1000)
-        } else if (warp_shift_status === 2) {
-            document.getElementById("warn").innerHTML = "You already have a prism in place!"
-            setTimeout(function () {
-                document.getElementById("warn").innerHTML = ""
-            }, 1000)
-        }
-    }
-    //Function to shift to the prism
-    function shift() {
-        if (warp_shift_status === 0) {
-            document.getElementById("warn").innerHTML = "Warp shift is still charging!"
-            setTimeout(function () {
-                document.getElementById("warn").innerHTML = ""
-            }, 1000)
-        } else if (warp_shift_status === 1) {
-            document.getElementById("warn").innerHTML = "No available prism!"
-            setTimeout(function () {
-                document.getElementById("warn").innerHTML = ""
-            }, 1000)
-        } else if (warp_shift_status === 2) {
-            document.getElementById("warn").innerHTML = "Warping!"
-            setTimeout(function () {
-                document.getElementById("warn").innerHTML = ""
-            }, 750)
-            setTimeout(function () {
-                c.setAttribute("cx", parseFloat(p.getAttribute("cx")))
-                c.setAttribute("cy", parseFloat(p.getAttribute("cy")))
-                p.classList.toggle("hidden")
-                counter = 0
-                warp_shift_status = 0
-            }, 750)
-        }
-    }
-
-    //handle movement
-    max_increment = 5
-    x_increment = 0
-    y_increment = 0
-
-    setInterval(function () {
-        let x = parseFloat(c.getAttribute("cx")) + x_increment
-        let y = parseFloat(c.getAttribute("cy")) + y_increment
-
-        let x_ = parseFloat(c.getAttribute("cx")) + max_increment
-        let y_ = parseFloat(c.getAttribute("cy")) + max_increment
-
-        if (x_increment < max_increment) {
-            c.setAttribute("cx", x)
-        } else {
-            c.setAttribute("cx", x_)
-        }
-        if (y_increment < max_increment) {
-            c.setAttribute("cy", y)
-        } else {
-            c.setAttribute("cy", y_)
-        }
-    }, 10)
-
-    //event listener to handle user input
-    window.addEventListener("keydown", function (e) {
-        e.preventDefault();
-        key = e.keyCode
-        //console.log(key);
-        switch (key) {
-            case 87: //W
-                y_increment -= 0.5
-                break
-            case 83: //S
-                y_increment += 0.5
-                break
-            case 65: //A
-                x_increment -= 0.5
-                break
-            case 68: //D
-                x_increment += 0.5
-                break
-            case 32: //Space
-                var ty = setInterval(() => {
-                    if (y_increment > 0) {
-                        y_increment -= 0.5
-                    } else if (y_increment < 0) {
-                        y_increment += 0.5
-                    } else if (y_increment === 0) {
-                        clearTimeout(ty)
-                    }
-                }, 100)
-
-                var tx = setInterval(() => {
-                    if (x_increment > 0) {
-                        x_increment -= 0.5
-                    } else if (x_increment < 0) {
-                        x_increment += 0.5
-                    } else if (x_increment === 0) {
-                        clearTimeout(tx)
-                    }
-                }, 100)
-                break
-            case 69: //E
-                shift();
-                break
-            case 81: //Q
-                layPrism();
-                break
-            case 76: //L
-                log("adhoc");
-                break
-            default:
-                console.log("no action");
-                break;
-        }
-    })
-
-
 </script>
 
 </html>
