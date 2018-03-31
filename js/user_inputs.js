@@ -38,7 +38,9 @@
                 }, 100)
                 break
             case 69: //E
+            if(shift_lock === 0) {
                 shift();
+            }
                 break
             case 81: //Q
                 layPrism();

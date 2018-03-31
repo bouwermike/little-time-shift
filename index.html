@@ -22,6 +22,7 @@
     <svg viewBox="0 0 1000 1000">
         <circle cx="500" cy="500" r="20" stroke="black" stroke-width="3" fill="" id="circle" />
         <circle cx="0" cy="0" r="5" stroke="green" stroke-width="3" fill="" id="prism" class="hidden" />
+        <rect x="250" y="250" width="150" height="150" style="fill:blue;stroke:pink;stroke-width:5;opacity:0.5" id="obj" />
     </svg>
     <div class="modal">
         <div class="modal-content">
@@ -29,13 +30,20 @@
             <h1>Welcome to warpShift!</h1>
             <h5>Controls</h5>
             <ul>
-                <li><strong> W: </strong> Fire upward thrusters </li> 
-                <li><strong> S: </strong>Fire downward thruster </li> 
-                <li><strong> A: </strong>Fire left thrusters </li>
-                <li><strong> D: </strong>Fire right thrusters </li>
-                <li><strong> Space: </strong>Kill all thrusters and stabilise ship</li>
-                <li><strong> Q: </strong>Place warp prism </li>
-                <li><strong> E: </strong>Warp to prism </li>
+                <li>
+                    <strong> W: </strong>Fire upward thrusters </li>
+                <li>
+                    <strong> S: </strong>Fire downward thruster </li>
+                <li>
+                    <strong> A: </strong>Fire left thrusters </li>
+                <li>
+                    <strong> D: </strong>Fire right thrusters </li>
+                <li>
+                    <strong> Space: </strong>Kill all thrusters and stabilise ship</li>
+                <li>
+                    <strong> Q: </strong>Place warp prism </li>
+                <li>
+                    <strong> E: </strong>Warp to prism </li>
             </ul>
         </div>
     </div>
@@ -44,15 +52,19 @@
     </div>
 </body>
 
+
+<script src="https://cdn.jsdelivr.net/npm/lodash@4.17.5/lodash.min.js"></script>
+<script>
+    // Global selectors
+    var c = document.getElementById("circle")
+    var p = document.getElementById("prism")
+    var o = document.getElementById("obj")
+</script>
 <script src="js/modal.js"></script>
 <script src="js/logging.js"></script>
 <script src="js/warpshift_mechanic.js"></script>
 <script src="js/movement.js"></script>
 <script src="js/user_inputs.js"></script>
-<script>
-    // Global selectors
-    var c = document.getElementById("circle")
-    var p = document.getElementById("prism")
-</script>
+<script src="js/collision_mechanic.js"></script>
 
 </html>
