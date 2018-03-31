@@ -14,20 +14,10 @@ ul {
     list-style-type: none;
     margin: 0;
     padding: 0;
-    overflow: hidden;
-    background-color: #333;
 }
 
 li {
-    float: left;
-}
-
-li p {
-    display: block;
-    color: white;
-    text-align: center;
-    padding: 4px 6px;
-    text-decoration: none;
+    margin: 0 0 4px;
 }
 
 /* status feed */
