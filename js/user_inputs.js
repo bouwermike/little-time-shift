@@ -1,3 +1,19 @@
+var pt = svg.createSVGPoint();  // Created once for document
+
+function alert_coords(evt) {
+    pt.x = evt.clientX;
+    pt.y = evt.clientY;
+
+    // The cursor point, translated into svg coordinates
+    var cursorpt =  pt.matrixTransform(svg.getScreenCTM().inverse());
+    console.log("(" + cursorpt.x + ", " + cursorpt.y + ")");
+}
+    
+    window.addEventListener("mousedown", (e) => {
+        alert_coords(e)
+        
+    })    
+    
     //event listener to handle user input
     window.addEventListener("keydown", function (e) {
         e.preventDefault();
@@ -6,15 +22,19 @@
         switch (key) {
             case 87: //W
                 y_increment -= 0.5
+                
                 break
             case 83: //S
                 y_increment += 0.5
+                
                 break
             case 65: //A
                 x_increment -= 0.5
+                
                 break
             case 68: //D
                 x_increment += 0.5
+                
                 break
             case 32: //Space
                 var ty = setInterval(() => {
@@ -38,7 +58,9 @@
                 }, 100)
                 break
             case 69: //E
+            if(shift_lock === 0) {
                 shift();
+            }
                 break
             case 81: //Q
                 layPrism();

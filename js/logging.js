@@ -15,6 +15,6 @@
                 px: parseFloat(p.getAttribute("cx")),
                 py: parseFloat(p.getAttribute("cy")),
                 pr: parseFloat(p.getAttribute("r"))
-            }
+            } 
         });
     }
