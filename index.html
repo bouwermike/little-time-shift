@@ -19,10 +19,9 @@
             <p id="warn"></p>
         </li>
     </ul>
-    <svg viewBox="0 0 1000 1000">
+    <svg viewBox="0 0 1000 1000" id="svg">
         <circle cx="500" cy="500" r="20" stroke="black" stroke-width="3" fill="" id="circle" />
         <circle cx="0" cy="0" r="5" stroke="green" stroke-width="3" fill="" id="prism" class="hidden" />
-        <rect x="250" y="250" width="150" height="150" style="fill:blue;stroke:pink;stroke-width:5;opacity:0.5" id="obj" />
     </svg>
     <div class="modal">
         <div class="modal-content">
@@ -50,6 +49,9 @@
     <div class="controls">
         <button class="trigger">Help</button>
     </div>
+    <div class="HUD">
+        <h3 id="health"> </h3>
+    </div>
 </body>
 
 
@@ -58,13 +60,26 @@
     // Global selectors
     var c = document.getElementById("circle")
     var p = document.getElementById("prism")
-    var o = document.getElementById("obj")
+    var h = document.getElementById("health")
+
+    //global variables
+    var health = 100
+    var max_increment = 5
+    var min_increment = -5
+    var x_increment = 0
+    var y_increment = 0
+    var anti_x_increment = -1//x_increment * 0.5
+    var anti_y_increment = -1//y_increment * 0.5
+
 </script>
 <script src="js/modal.js"></script>
 <script src="js/logging.js"></script>
 <script src="js/warpshift_mechanic.js"></script>
 <script src="js/movement.js"></script>
 <script src="js/user_inputs.js"></script>
+<script src="js/random_object_creator.js"></script>
 <script src="js/collision_mechanic.js"></script>
+<script src="js/death_mechanic.js"></script>
+
 
 </html>
