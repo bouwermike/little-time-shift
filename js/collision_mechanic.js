@@ -37,6 +37,8 @@ var callback = function (mutationsList) {
                 for (i = 0; i < e_list.length; i++) {
                     if (checkCollision(circle, e_list[i])) {
                         collision_flag = true
+                        log("collision")
+                        
                     }
                 }
             }
@@ -46,8 +48,6 @@ var callback = function (mutationsList) {
             } else if (collision_flag){
                 start_rebound()
             }
-            //console.log(collision_flag);
-
         }
     };
 }
