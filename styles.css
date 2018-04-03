@@ -1,32 +1,52 @@
-.hidden {
-    visibility: hidden
+
+/* defaults */
+
+html, body { margin:0; padding:0; overflow:hidden; font-family: 'IBM Plex Mono', monospace; }
+
+svg { position:fixed; top:0; left:0; height:100%; width:100% }
+
+p {
+    margin: 0;
+    padding: 0 0 8px;
 }
 
 ul {
     list-style-type: none;
     margin: 0;
     padding: 0;
-    overflow: hidden;
-    background-color: #333;
 }
 
 li {
-    float: left;
+    margin: 0 0 4px;
 }
 
-li p {
-    display: block;
-    color: white;
-    text-align: center;
-    padding: 4px 6px;
-    text-decoration: none;
+/* status feed */
+
+.status-feed {
+    background-color: #333;
+    color: #FFF;
+    display: flex;
+    padding: 16px;
 }
+
+    .status-feed p {
+        flex-grow: 1;
+    }
+
+    .status-feed #warn {
+        text-align: right;
+    }
+
+/* helpers */
+
+.hidden { visibility: hidden }
+
 .controls {
     position: fixed;
     left: 0;
     bottom:0
-
 }
+
 .controls button{
         background-color: rgba(1, 50, 82, 0.432);
         color: white;
@@ -38,9 +58,6 @@ li p {
         cursor: pointer;
         border-radius: 8px;
 }
-
-html, body { margin:0; padding:0; overflow:hidden; font-family: 'IBM Plex Mono', monospace; }
-svg { position:fixed; top:0; left:0; height:100%; width:100% }
 
 .modal {
     position: fixed;
@@ -83,6 +100,7 @@ svg { position:fixed; top:0; left:0; height:100%; width:100% }
 .close-button:hover {
     background-color: darkgray;
 }
+
 .show-modal {
     opacity: 1;
     visibility: visible;
